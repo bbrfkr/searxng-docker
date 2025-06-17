@@ -3,7 +3,7 @@ services:
     restart: always
     image: ghcr.io/open-webui/open-webui:main
     ports:
-      - 8080:8080
+      - "8888:8080"
     volumes:
       - ./open-webui-data:/app/backend/data
   redis:
@@ -27,7 +27,7 @@ services:
     networks:
       - open-webui 
     ports:
-      - "127.0.0.1:8080:8080"
+      - "8080:8080"
     volumes:
       - ./searxng:/etc/searxng:rw
     environment:
