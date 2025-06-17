@@ -9,7 +9,8 @@ ui:
   static_use_hash: true
 redis:
   url: redis://redis:6379/0
-formats:
-  - html
-  - json
+search:
+  formats:
+    - html
+    - json
 
