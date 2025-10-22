@@ -23,10 +23,8 @@ services:
       - "8080:8080"
     volumes:
       - ./searxng:/etc/searxng:rw
-    environment:
-      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME:-localhost}/
-      - GRANIAN_WORKERS=${SEARXNG_WORKERS:-4}
-      - SEARXNG_VALKEY_URL=valkey://cache:6379/0
+    env_file:
+      - .env
     logging:
       driver: "json-file"
       options:
