@@ -31,7 +31,7 @@ services:
         max-size: "1m"
         max-file: "1"
   mcp-searxng:
-    contaier_name: mcp-searxng
+    container_name: mcp-searxng
     image: isokoliuk/mcp-searxng:latest
     ports:
       - "3000:3000"
