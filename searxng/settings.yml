@@ -13,4 +13,30 @@ search:
   formats:
     - html
     - json
+  default_lang: ""  # Auto-detect language for multilingual support
+  autocomplete: "duckduckgo"  # Better autocomplete suggestions
+outgoing:
+  request_timeout: 5.0  # Increased timeout for better results
+  max_request_timeout: 15.0  # Maximum timeout for slow engines
+  pool_connections: 150  # More connections for better parallelism
+  pool_maxsize: 20  # More keep-alive connections
+  retries: 2  # Retry failed requests
+  enable_http2: true  # Enable HTTP/2 for performance
+engines:
+  - name: google
+    engine: google
+    weight: 1.2  # Slightly higher weight for balance
+    timeout: 5.0
+  - name: bing
+    engine: bing
+    weight: 1.0
+    timeout: 5.0
+  - name: duckduckgo
+    engine: duckduckgo
+    weight: 1.0
+    timeout: 5.0
+  - name: qwant
+    engine: qwant
+    weight: 0.8
+    timeout: 5.0
 
