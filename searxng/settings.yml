@@ -2,41 +2,72 @@
 use_default_settings: true
 server:
   # base_url is defined in the SEARXNG_BASE_URL environment variable, see .env and docker-compose.yml
-  secret_key: "topsecret"
+  secret_key: "your-very-long-random-secret-key-change-this"
   limiter: false  # enable this when running the instance for a public usage on the internet
   image_proxy: true
 ui:
   static_use_hash: true
 redis:
-  url: redis://redis:6379/0
+  url: redis://cache:6379/0  # Match docker service name
 search:
   formats:
     - html
     - json
-  default_lang: ""  # Auto-detect language for multilingual support
+  default_lang: "ja-JP"  # Japanese language preference
   autocomplete: "duckduckgo"  # Better autocomplete suggestions
+  safe_search: 0  # No filtering for comprehensive results
 outgoing:
-  request_timeout: 5.0  # Increased timeout for better results
-  max_request_timeout: 15.0  # Maximum timeout for slow engines
-  pool_connections: 150  # More connections for better parallelism
-  pool_maxsize: 20  # More keep-alive connections
-  retries: 2  # Retry failed requests
+  request_timeout: 8.0  # Optimized for reliable engines
+  max_request_timeout: 20.0  # Maximum timeout for slow engines
+  pool_connections: 100  # Balanced connection pool
+  pool_maxsize: 20  # Reasonable keep-alive connections
+  retries: 2  # Balanced retry attempts
   enable_http2: true  # Enable HTTP/2 for performance
+
 engines:
-  - name: google
-    engine: google
-    weight: 1.2  # Slightly higher weight for balance
-    timeout: 5.0
+  # Primary search engines (no Google)
   - name: bing
     engine: bing
-    weight: 1.0
-    timeout: 5.0
+    weight: 1.5  # Increased weight as primary engine
+    timeout: 8.0
+    disabled: false
   - name: duckduckgo
     engine: duckduckgo
-    weight: 1.0
-    timeout: 5.0
+    weight: 1.3  # Strong secondary engine
+    timeout: 6.0
+    disabled: false
   - name: qwant
     engine: qwant
-    weight: 0.8
-    timeout: 5.0
+    weight: 0.9  # European perspective
+    timeout: 7.0
+    disabled: false
+  
+  # Specialized engines for better coverage
+  - name: startpage
+    engine: startpage
+    weight: 1.2  # Google-like results quality
+    timeout: 7.0
+    disabled: false
+  - name: brave
+    engine: brave
+    weight: 0.8  # Privacy-focused alternative
+    timeout: 6.0
+    disabled: false
+  - name: yandex
+    engine: yandex
+    weight: 0.6  # Alternative perspective
+    timeout: 6.0
+    disabled: false
+  
+  # News and specialized content
+  - name: bing_news
+    engine: bing_news
+    weight: 0.7  # Current events
+    timeout: 6.0
+    disabled: false
+  - name: wikidata
+    engine: wikidata
+    weight: 0.3  # Structured data
+    timeout: 4.0
+    disabled: false
 
