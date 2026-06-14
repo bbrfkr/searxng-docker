@@ -13,7 +13,7 @@ search:
   formats:
     - html
     - json
-  default_lang: "ja-JP"  # Japanese language preference
+  default_lang: "all"  # Do not region-lock results (was ja-JP, hurt English/technical queries)
   autocomplete: "duckduckgo"  # Better autocomplete suggestions
   safe_search: 0  # No filtering for comprehensive results
 outgoing:
@@ -25,10 +25,10 @@ outgoing:
   enable_http2: true  # Enable HTTP/2 for performance
 
 engines:
-  # Primary search engines (no Google)
-  - name: bing
-    engine: bing
-    weight: 1.5  # Increased weight as primary engine
+  # Primary engines — robust, high-volume, tolerate burst traffic from agents
+  - name: google
+    engine: google
+    weight: 1.6  # Most resilient / highest coverage, keeps result pool non-empty
     timeout: 8.0
     disabled: false
   - name: duckduckgo
@@ -36,21 +36,26 @@ engines:
     weight: 1.3  # Strong secondary engine
     timeout: 6.0
     disabled: false
+  - name: bing
+    engine: bing
+    weight: 1.2  # Good coverage but historically fragile, so not the sole primary
+    timeout: 8.0
+    disabled: false
+  - name: mojeek
+    engine: mojeek
+    weight: 1.0  # Independent crawler, resistant to rate limiting -> redundancy
+    timeout: 7.0
+    disabled: false
+
+  # Secondary engines — extra coverage; may get suspended under burst, that's fine
   - name: qwant
     engine: qwant
     weight: 0.9  # European perspective
     timeout: 7.0
     disabled: false
-  
-  # Specialized engines for better coverage
-  - name: startpage
-    engine: startpage
-    weight: 1.2  # Google-like results quality
-    timeout: 7.0
-    disabled: false
   - name: brave
     engine: brave
-    weight: 0.8  # Privacy-focused alternative
+    weight: 0.5  # Rate-limits hard (180s suspend); demoted to a bonus source
     timeout: 6.0
     disabled: false
   - name: yandex
@@ -58,11 +63,17 @@ engines:
     weight: 0.6  # Alternative perspective
     timeout: 6.0
     disabled: false
-  
+  # startpage disabled: permanently returns a JSON parsing error on this instance.
+  # Must be explicit because use_default_settings merges engines by name (omitting
+  # it would leave the default-enabled startpage active).
+  - name: startpage
+    engine: startpage
+    disabled: true
+
   # News and specialized content
   - name: bing_news
     engine: bing_news
-    weight: 0.7  # Current events
+    weight: 0.5  # Current events
     timeout: 6.0
     disabled: false
   - name: wikidata
